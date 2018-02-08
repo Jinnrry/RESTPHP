@@ -1,5 +1,5 @@
 <?php
-class Ko_App_RestApi
+class RestApi
 {
     protected $aPostArg=null;    //存储提交过来的数据
     function __construct($method)
@@ -16,6 +16,34 @@ class Ko_App_RestApi
                     break;
                 case 'GET':
                     $this->aPostArg = $_GET;
+                    if ( !isset($this->aPostArg['action'])  || $this->aPostArg['action']==''   )   //检查action是否存在
+                    {
+                        exit($this->buildJson(false,'action参数不存在',[]));
+                    }
+                    break;
+                case 'PUT':
+                    parse_str(file_get_contents('php://input'), $this->aPostArg);
+                    if ( !isset($this->aPostArg['action'])  || $this->aPostArg['action']==''   )   //检查action是否存在
+                    {
+                        exit($this->buildJson(false,'action参数不存在',[]));
+                    }
+                    break;
+                case 'DELETE':
+                    parse_str(file_get_contents('php://input'), $this->aPostArg);
+                    if ( !isset($this->aPostArg['action'])  || $this->aPostArg['action']==''   )   //检查action是否存在
+                    {
+                        exit($this->buildJson(false,'action参数不存在',[]));
+                    }
+                    break;
+                case 'PATCH':
+                    parse_str(file_get_contents('php://input'), $this->aPostArg);
+                    if ( !isset($this->aPostArg['action'])  || $this->aPostArg['action']==''   )   //检查action是否存在
+                    {
+                        exit($this->buildJson(false,'action参数不存在',[]));
+                    }
+                    break;
+                case 'OPTIONS':
+                    parse_str(file_get_contents('php://input'), $this->aPostArg);
                     if ( !isset($this->aPostArg['action'])  || $this->aPostArg['action']==''   )   //检查action是否存在
                     {
                         exit($this->buildJson(false,'action参数不存在',[]));
@@ -43,7 +71,12 @@ class Ko_App_RestApi
     //获取方法里面的参数名
     function getFucntionParameterName($classname,$func)
     {
-        $ReflectionMethod = new \ReflectionMethod($classname,$func);
+        try{
+            $ReflectionMethod = new \ReflectionMethod($classname,$func);
+        }catch (Exception $e){
+            exit($this->buildJson(false,'该action('.$func.')操作不存在',[])) ;
+        }
+
         return $ReflectionMethod->getParameters();
     }
 
