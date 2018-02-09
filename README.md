@@ -9,7 +9,7 @@
 
     <?php
 
-    require_once "RestApi.php";
+    require_once "RestPHP/autoload.php";
 
     class postapitest extends Ko_App_RestApi{
 

@@ -98,7 +98,7 @@ class RestApi
                 $functionParameter[$index]=null;
         }
 
-       echo $this->$functionName(...$functionParameter);
+        echo $this->$functionName(...$functionParameter);
 
 
     }
