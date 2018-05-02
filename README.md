@@ -1,58 +1,64 @@
 # RESTPHP
-一个超轻量级的PHP REST API框架
+一个轻量级的PHP REST API框架
 
-整个“框架”只有一个类，够轻吧！
 
-实现了表单数据自动注入接口函数，But 目前只支持POST和GET方式提交~~~~ 待有时间再补充
+简介：实现了使用注解配置接口的请求方法。
 
-使用示例 test.php
+例如，声明一个GET接口只需要在对应函数的注释里写上@method:GET
+
+
+使用示例 index.php
 
     <?php
 
     require_once "RestPHP/autoload.php";
 
-    class postapitest extends Ko_App_RestApi{
-
-        //会自动将POST中的name和id和news 字段注入到 $name $id  $news变量中
-        //当POST中的action值为  ttc的时候会调用这个方法
-        function  ttc($name,$id,$news)
-        {
-            return $this->buildJson(true,'POST接口',["name"=>$name,"id"=>$id,"n"=>$news]);
-        }
 
 
-        //会自动将POST中的name和id字段注入到 $name $id 变量中
-        //当POST中的action值为  tt的时候会调用这个方法
-        function  tt($name,$id)
-        {
-            return $this->buildJson(true,'POST接口',["name"=>$name,"id"=>$id]);
-        }
 
+Controller/IndexController.php
+
+	<?php
+	class IndexController
+    {
+    	/**
+    	 * 会自动将请求参数中的name值注入到这个函数的name参数中
+    	 * 声明这个接口是POST调用
+    	 * @method:POST
+    	 */
+    	public function Index($name)
+    	{
+    		return [
+    			"_code" => 200,
+    			"_message" => '成功！',
+    			"name" => "小米"
+    		];
+    	}
+    
+    
+    	/**
+    	 * 会自动将请求参数中的name,id值注入到这个函数的name,id参数中
+    	 * 声明这个接口是GET调用
+    	 * @method:get
+    	 */
+    	public function test($id, $name)
+    	{
+    		return array(
+    			"id" => $id,
+    			"name" => $name
+    		);
+    	}
     }
 
-    class getapitest extends Ko_App_RestApi{
-        //会自动将GET中的name和id和news 字段注入到 $name $id  $news变量中
-        //当GET中的action值为  ttc的时候会调用这个方法
-        function  ttc($name,$id,$news)
-        {
-            return $this->buildJson(true,'GET接口',["name"=>$name,"id"=>$id,"n"=>$news]);
-        }
+对应接口：
+
+GET: http://localhost/index.php/Index/test?name=xiaoming&id=22
+
+返回：
+	
+	{"data":{"id":"22","name":"xiaoming"},"message":"success","code":200}
 
 
-        //同上
-        function  tt($name,$id)
-        {
-            return $this->buildJson(true,'GET接口',["name"=>$name,"id"=>$id]);
-        }
+POST: http://localhost/index.php
 
-    }
-
-    $api=new postapitest('POST');
-    $api->run();
-
-    $getapi=new getapitest('GET');
-    $getapi->run();
-
-
-
-这时即可通过get或者post方法访问http://xxxx/test.php
+	{"data":{"name":"\u5c0f\u7c73"},"message":"\u6210\u529f\uff01","code":200}
