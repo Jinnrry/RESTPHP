@@ -42,7 +42,12 @@ class Init
 		}
 	}
 
-
+	/**
+	 * 检查方法是否允许调用
+	 * @param $method
+	 * @param string $sRequestMethod
+	 * @return bool
+	 */
 	private function bCheack($method, $sRequestMethod = 'GET')
 	{
 		$sDoc = $method->getDocComment();
@@ -51,7 +56,9 @@ class Init
 		return strtolower(trim($aMatches[0])) == strtolower($sRequestMethod);
 	}
 
-
+	/**
+	 * 入口函数
+	 */
 	public function run()
 	{
 		$aPath = explode("/", $_SERVER['PHP_SELF']);
@@ -59,7 +66,7 @@ class Init
 		$sFunction = $aPath[3] ?: "Index";
 		$sFileName = "./RESTPHP/Controller/" . $sClass . ".php";
 
-	
+
 		if (file_exists($sFileName)) {
 			require_once("./RESTPHP/Controller/" . $sClass . ".php");
 		} else {
